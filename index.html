@@ -27,8 +27,15 @@
 						<li style="display: inline; list-style-type: none;" v-for="size in sizes"> {{ size }}</li>
 					</ul>
 					<div v-for="variant in variants" :key="variant.variantId">
-						<p>{{ variant.variantColor}}</p>
+						<p @mouseover="changeImage(variant.variantImage)">{{ variant.variantColor}}</p>
 					</div>
+
+					<button v-on:click="addToCart">Add to cart</button>
+					<button style="width: 140px;" @click="removeFromCart">Remove from cart</button>
+
+					<div class="cart">
+        				<p>Cart({{ cart }})</p>
+      				</div>
 				</div>
 			</div>
 		</div>

@@ -1,5 +1,19 @@
 'use strict';
 
+Vue.component('product-details', {
+ 	props: {
+    	details: {
+      		type: Array,
+      		required: true
+    	}
+  	},
+  	template: `
+  		<ul>
+      		<li v-for="detail in details">{{ detail }}</li>
+    	</ul>
+  	`
+})
+
 Vue.component('product', {
 	props: {
 		premium: {
@@ -7,48 +21,49 @@ Vue.component('product', {
 			required: true
 		}
 	},
-	template: `<div class="product">
-				<div class="product-image">	
-					<img v-bind:src="image">
+	template: `
+		<div class="product">
+			<div class="product-image">	
+				<img v-bind:src="image">
+			</div>
+			<div class="product-info">
+				<h1>{{ title }}</h1>
+				<p>{{ description }}</p>
+				<a :href="link">More products like this</a>
+				<p v-if="inventory > 10">In Stock</p>
+				<p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
+				<p v-else
+				   :class="{ outOfStock: inventory == 0 }">Out of Stock</p>
+				<!-- <span v-show="onSale">On Sale!</span> -->
+				<p style="color: #e74c3c;">{{ sale }}</p>
+
+				<p>Shipping: {{ shipping }}</p>
+
+				<product-details :details="details"></product-details>
+				
+				<ul>
+					<li style="display: inline; list-style-type: none;" v-for="size in sizes"> {{ size }}</li>
+				</ul>
+				<div v-for="(variant, index) in variants" 
+					:key="variant.variantId"
+					class="color-box"
+					:style="{ backgroundColor: variant.variantColor }"
+					@mouseover="updateProduct(index)">
 				</div>
-				<div class="product-info">
-					<h1>{{ title }}</h1>
-					<p>{{ description }}</p>
-					<a :href="link">More products like this</a>
-					<p v-if="inventory > 10">In Stock</p>
-					<p v-else-if="inventory <= 10 && inventory > 0">Almost sold out!</p>
-					<p v-else
-					   :class="{ outOfStock: inventory == 0 }">Out of Stock</p>
-					<!-- <span v-show="onSale">On Sale!</span> -->
-					<p style="color: #e74c3c;">{{ sale }}</p>
 
-					<p>Shipping: {{ shipping }}</p>
+				<button v-on:click="addToCart" 
+						:disabled="inventory == 0"
+						:class="{ disabledButton: inventory == 0 }">Add to cart</button>
+				<button style="width: 140px;" 
+						@click="removeFromCart" 
+						:class="{ disabledButton: cart == 0 }">Remove from cart</button>
 
-					<ul>
-						<li v-for="detail in details"> {{ detail }}</li>
-					</ul>
-					<ul>
-						<li style="display: inline; list-style-type: none;" v-for="size in sizes"> {{ size }}</li>
-					</ul>
-					<div v-for="(variant, index) in variants" 
-						:key="variant.variantId"
-						class="color-box"
-						:style="{ backgroundColor: variant.variantColor }"
-						@mouseover="updateProduct(index)">
-					</div>
-
-					<button v-on:click="addToCart" 
-							:disabled="inventory == 0"
-							:class="{ disabledButton: inventory == 0 }">Add to cart</button>
-					<button style="width: 140px;" 
-							@click="removeFromCart" 
-							:class="{ disabledButton: cart == 0 }">Remove from cart</button>
-
-					<div class="cart">
-        				<p>Cart({{ cart }})</p>
-      				</div>
-				</div>
-			</div>`,
+				<div class="cart">
+    				<p>Cart({{ cart }})</p>
+  				</div>
+			</div>
+		</div>
+	`,
 	data() { 
 		return {
 			brand: 'Vue Mastery',

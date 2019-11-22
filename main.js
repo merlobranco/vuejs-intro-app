@@ -1,6 +1,12 @@
 'use strict';
 
 Vue.component('product', {
+	props: {
+		premium: {
+			type: Boolean,
+			required: true
+		}
+	},
 	template: `<div class="product">
 				<div class="product-image">	
 					<img v-bind:src="image">
@@ -15,6 +21,9 @@ Vue.component('product', {
 					   :class="{ outOfStock: inventory == 0 }">Out of Stock</p>
 					<!-- <span v-show="onSale">On Sale!</span> -->
 					<p style="color: #e74c3c;">{{ sale }}</p>
+
+					<p>Shipping: {{ shipping }}</p>
+
 					<ul>
 						<li v-for="detail in details"> {{ detail }}</li>
 					</ul>
@@ -98,11 +107,19 @@ Vue.component('product', {
             	return this.brand + ' ' + this.product + ' are on sale!'
           	} 
           	return  this.brand + ' ' + this.product + ' are not on sale'
+        },
+        shipping() {
+        	if (this.premium) {
+        		return 'Free';
+        	}
+        	return 2.99;
         }
 	}
 });
 
 var app = new Vue({
 	el: '#app',
-	
+	data: {
+		premium: true
+	}	
 });

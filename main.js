@@ -55,7 +55,8 @@ Vue.component('product', {
 						:disabled="inventory == 0"
 						:class="{ disabledButton: inventory == 0 }">Add to cart</button>
 				<button style="width: 140px;" 
-						@click="removeFromCart">Remove from cart</button>
+						@click="removeFromCart"
+						:class="{ disabledButton: !added }">Remove from cart</button>
 			</div>
 		</div>
 	`,
@@ -84,18 +85,21 @@ Vue.component('product', {
 				}
 			],
 			sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
-			onSale: true
+			onSale: true,
+			added: false
 		}
 	},
 	methods: {
 		addToCart: function () {
-			this.$emit('add-to-cart');
+			this.added = true;
+			this.$emit('add-to-cart', this.variants[this.selectedVariant].variantId);
 		},
 		updateProduct: function(index) {
 			this.selectedVariant = index;
 		},
 		removeFromCart: function () {
-			this.$emit('remove-from-cart');
+			this.added = false;
+			this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantId);
 		}
 	},
 	computed: {
@@ -127,16 +131,19 @@ var app = new Vue({
 	el: '#app',
 	data: {
 		premium: true,
-		cart: 0
+		cart: []
 	},
 	methods: {
-		addToCart: function () {
-			this.cart += 1;
+		addToCart: function (id) {
+			this.cart.push(id);
 		},
-		removeFromCart: function () {
-			if (!this.cart)
+		removeFromCart: function (id) {
+			if (!this.cart.length)
 				return;
-			this.cart -= 1;
+
+			this.cart = this.cart.filter((e) => {
+    			return e !== id;
+			});
 		}
 	}	
 });

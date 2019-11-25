@@ -14,7 +14,6 @@ Vue.component('product-review', {
       			</ul>
     		</p>
 
-
 		    <p>
 		    	<label for="name">Name:</label>
 		        <input id="name" v-model="name" placeholder="name">
@@ -118,6 +117,7 @@ Vue.component('product-tabs', {
 			</div>
 
 			<product-review v-show="selectedTab == 'Make a Review'"></product-review>
+
   		</div>
   	`,
   	data() {
@@ -127,7 +127,6 @@ Vue.component('product-tabs', {
   		}
   	}
 });
-
 
 Vue.component('product-details', {
  	props: {
@@ -141,6 +140,43 @@ Vue.component('product-details', {
       		<li v-for="detail in details">{{ detail }}</li>
     	</ul>
   	`
+});
+
+Vue.component('info-tabs', {
+    props: {
+      shipping: {
+        required: true
+      },
+      details: {
+        type: Array,
+        required: true
+      }
+    },
+    template: `
+      <div>
+        <ul>
+          <span class="tab" 
+                :class="{ activeTab: selectedTab === tab }"
+                v-for="(tab, index) in tabs"
+                @click="selectedTab = tab"
+                :key="tab"
+          >{{ tab }}</span>
+        </ul>
+
+        <div v-show="selectedTab === 'Shipping'">
+          <p>{{ shipping }}</p>
+        </div>
+
+        <product-details v-show="selectedTab == 'Details'"
+						 :details="details"></product-details>
+      </div>
+    `,
+    data() {
+      return {
+        tabs: ['Shipping', 'Details'],
+        selectedTab: 'Shipping'
+      }
+    }
 });
 
 Vue.component('product', {
@@ -166,9 +202,8 @@ Vue.component('product', {
 				<!-- <span v-show="onSale">On Sale!</span> -->
 				<p style="color: #e74c3c;">{{ sale }}</p>
 
-				<p>Shipping: {{ shipping }}</p>
-
-				<product-details :details="details"></product-details>
+				<info-tabs :shipping="shipping"
+							  :details="details"></info-tabs>
 				
 				<ul>
 					<li style="display: inline; list-style-type: none;" v-for="size in sizes"> {{ size }}</li>
@@ -197,7 +232,6 @@ Vue.component('product', {
 			product: 'Socks',
 			description: 'A pair of warm, fuzzy socks',
 			selectedVariant: 0,
-			// image: './assets/vmSocks-green.jpg',
 			link: 'https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks',
 			onSale: true,
 			details: ['80% cotton', '20% polyester', 'Gender-neutral'],

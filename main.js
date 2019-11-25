@@ -1,5 +1,18 @@
 'use strict';
 
+Vue.component('product-review', {
+  	template: `
+  		<input v-model="name">
+  	`,
+  	data() { 
+		return {
+			name: null
+		}
+	},
+})
+
+
+
 Vue.component('product-details', {
  	props: {
     	details: {
@@ -58,6 +71,7 @@ Vue.component('product', {
 						@click="removeFromCart"
 						:class="{ disabledButton: !added }">Remove from cart</button>
 			</div>
+			<product-review></product-review>
 		</div>
 	`,
 	data() { 

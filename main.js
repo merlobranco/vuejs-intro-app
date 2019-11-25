@@ -1,7 +1,7 @@
 'use strict';
 
 // Declaring a global channel for communicating the product-tabs component to its grandparent product component
-var eventBus = new Vue()
+var eventBus = new Vue();
 
 Vue.component('product-review', {
   	template: `
@@ -232,10 +232,7 @@ Vue.component('product', {
 		removeFromCart: function () {
 			this.added = false;
 			this.$emit('remove-from-cart', this.variants[this.selectedVariant].variantId);
-		},
-		// addReview: function (review) {
-		// 	this.reviews.push(review);
-		// }
+		}
 	},
 	computed: {
 		title() {
